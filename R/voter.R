@@ -42,7 +42,7 @@ voter <- function(inputMatrix, L, noise=NULL) {
   } else if (!is.numeric(noise)|!is.null(noise)) {
     stop("noise must be a number, 'automatic', or NULL")
   }
-
+  
   # igraph stores weights and edges separately, 
   # to get around this I did not use the transition matrix directly. 
   # I used it as reference/temp to calculate weights then later refer to weights with G[i]
@@ -78,19 +78,19 @@ voter <- function(inputMatrix, L, noise=NULL) {
   
   # iterate through time series data and use transition graph weights as sum
   for (t in 2:L) {
-
+    
     TS[,t] = TS[,t-1]
     for (i in indices) {
       TS[i,t] <- sample(c(TS[,t]), 1, replace = FALSE, prob = c(G[i]))
-       if (!is.null(noise)) {
-         if (runif(1) < noise) {
-           if (runif(1) < .5) {
-             TS[i, t] = 1
-           } else {
-             TS[i, t] = -1
-           }
-         }
-       }
+      if (!is.null(noise)) {
+        if (runif(1) < noise) {
+          if (runif(1) < .5) {
+            TS[i, t] = 1
+          } else {
+            TS[i, t] = -1
+          }
+        }
+      }
     }
     
   }
@@ -99,6 +99,3 @@ voter <- function(inputMatrix, L, noise=NULL) {
   
   return(results)
 }
-
-
-
