@@ -1,38 +1,22 @@
-# voter.R
-#
-# Implementation of voter model dynamics on a network in R.
-# author: Luke Perry
-# Submitted as part of research assistance for Dr. William Fagan and Anshuman Swain
-#
-# Simulate voter-model-style dynamics on a network.
-# Nodes are randomly assigned a state in :math:`\{-1, 1\}`; at each
-# time step all nodes asynchronously update by choosing their new
-# state uniformly from their neighbors. Generates an :math:`N \times
-# L` time series.
-# The results dictionary also stores the ground truth network as
-# `'ground_truth'`.
-#
-# Parameters
-# ----------
-# G (matrix)
-#     the input (ground-truth) graph with `N` nodes.
-# L (int)
-#     the length of the desired time series.
-# noise (float, str or None)
-#     if noise is present, with this probability a node's state will
-#     be randomly redrawn from :math:`\{-1, 1\}` independent of its
-#     neighbors' states. If 'automatic', set noise to :math:`1/N`.
-#
-# Returns
-# -------
-# TS (matrix)
-#     an :math:`N \times L` array of synthetic time series data.
+#' voter.R
+#'
+#' Implementation of voter model dynamics on a network in R.
+#'
+#' Simulate voter-model-style dynamics on a network.
+#' Nodes are randomly assigned a state in (-1,1) at each
+#' time step all nodes asynchronously update by choosing their new
+#' state uniformly from their neighbors. 
+#' Generates an N*L time series.
+#' The results dictionary also stores the time series as TS and ground truth adjacency matrix as ground_truth.
+#'
+#' @param inputMatrix the input (ground-truth) graph with `N` nodes. Must be valid square adjacency matrix.
+#' @param L the length of the desired time series.
+#' @param noise if noise is present, with this probability a node's state will be randomly redrawn from (-1,1) \cr 
+#' independent of its neighbors' states. If 'automatic', set noise to 1/N.
+#' @return results a list with TS matrix an N*L array of synthetic time series data.
 
 
-# dependency import
-library(igraph)
-
-# get dimensions helper function
+# get dimensions of vertices helper function
 DIM <- function( ... ){
   args <- list(...)
   lapply( args , function(x) { if( is.null( dim(x) ) )
@@ -40,11 +24,15 @@ DIM <- function( ... ){
     dim(x) } )
 }
 
-voter <- function(G, L, noise=NULL) {
+#' @export
+voter <- function(inputMatrix, L, noise=NULL) {
+  # create return list
+  results <- list()
+  
   # get adj matrix
-  G = graph_from_adjacency_matrix(x, weighted = TRUE)
+  G = igraph::graph_from_adjacency_matrix(inputMatrix, weighted = TRUE)
   # get num of nodes in igraph obj
-  N = unlist(DIM(V(G))) 
+  N = unlist(DIM(igraph::V(G))) 
   
   # noise input validation
   if (is.null(noise)) {
@@ -60,14 +48,14 @@ voter <- function(G, L, noise=NULL) {
   # I used it as reference/temp to calculate weights then later refer to weights with G[i]
   #
   # get adj mat
-  transitions = get.adjacency(G)  
+  transitions = igraph::get.adjacency(G)  
   # sum cols of adjmat for n columns
-  colSums = unname(tapply(E(G)$weight, (seq_along(E(G)$weight)-1) %/% ncol(transitions), sum))
+  colSums = unname(tapply(igraph::E(G)$weight, (seq_along(igraph::E(G)$weight)-1) %/% ncol(transitions), sum))
   # divide each vertex's weight by sum of edge weights for that vertex
   colSumIter = 1
   currColSumIter = 1
-  for (i in 1:length(E(G)$weight)) {
-    E(G)$weight[i] <- E(G)$weight[i] / colSums[colSumIter]
+  for (i in 1:length(igraph::E(G)$weight)) {
+    igraph::E(G)$weight[i] <- igraph::E(G)$weight[i] / colSums[colSumIter]
     if (currColSumIter == ncol(transitions)) {
       currColSumIter = 0
       colSumIter = colSumIter + 1
@@ -106,47 +94,11 @@ voter <- function(G, L, noise=NULL) {
     }
     
   }
-
-  return(TS)
+  results[["ground_truth"]] = inputMatrix
+  results[["TS"]] = TS
+  
+  return(results)
 }
 
-# R code and test data:
-#
-# L = 6
-# Noise = .5
-#
-#      [,1] [,2] [,3] [,4] [,5] [,6]
-#[1,]   -1    1    1    1    1    1
-#[2,]   -1   -1    1    1   -1    1
-#[3,]    1    1    1   -1    1    1
-#
-#
-#
-# Python code and test data:
-#
-# import networkx as nx
-# import numpy as np
-# G = nx.Graph()
-# G.add_edge("a", "a", weight=1)
-# G.add_edge("a", "b", weight=2)
-# G.add_edge("a", "c", weight=3)
-# N = G.number_of_nodes()
-# L = 6
-# Noise = .5
-# transitions = nx.to_numpy_array(G)
-# transitions = transitions / np.sum(transitions, axis=0)
-# noise = .5
-# TS = np.zeros((N, L))
-# TS[:, 0] = [1 if x < 0.5 else -1 for x in np.random.rand(N)]
-# indices = np.arange(N)
-# for t in range(1, L):
-#     np.random.shuffle(indices)
-#     TS[:, t] = TS[:, t - 1]
-#     for i in indices:
-#         TS[i, t] = np.random.choice(TS[:, t], p=transitions[:, i])
-#         if np.random.rand() < noise:
-#             TS[i, t] = 1 if np.random.rand() < 0.5 else -1
-# print(TS)
-# >>> [[ 1.  1. -1. -1.  1. -1.]
-#      [-1.  1.  1.  1. -1.  1.]
-#      [-1.  1. -1. -1. -1.  1.]]
+
+
