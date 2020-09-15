@@ -33,13 +33,16 @@ voter <- function(inputMatrix, L, noise=NULL) {
   G = igraph::graph_from_adjacency_matrix(inputMatrix, weighted = TRUE)
   # get num of nodes in igraph obj
   N = unlist(DIM(igraph::V(G))) 
+
   
   # noise input validation
   if (is.null(noise)) {
     noise <- 0
-  } else if (identical(noise, "automatic" | noise, "auto")) {
+  }
+  if (identical(noise, "automatic") || identical(noise, "auto")) {
     noise <- 1 / N
-  } else if (!is.numeric(noise)|!is.null(noise)) {
+  } 
+  if (!is.numeric(noise) || is.null(noise)) {
     stop("noise must be a number, 'automatic', or NULL")
   }
   
@@ -99,3 +102,4 @@ voter <- function(inputMatrix, L, noise=NULL) {
   
   return(results)
 }
+

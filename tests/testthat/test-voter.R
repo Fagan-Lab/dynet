@@ -13,7 +13,7 @@ test_that("Test Voter Model Dynamics Ground Truth", {
   )
   
   L = 5
-  results <- voter(input, L)
+  results <- voter(input, L, .5)
   
   expect_equal(results[["ground_truth"]], input)
   
@@ -29,10 +29,10 @@ test_that("Test Voter Model Dynamics Time Series Dimensions", {
     ),
     nrow = 4
   )
-  
+
   L = 5
   results <- voter(input, 5)
-  
+
   expect_equal(nrow(results[["TS"]]), nrow(input))
   expect_equal(ncol(results[["TS"]]), L)
 })
@@ -47,23 +47,24 @@ test_that("Test Voter Model Dynamics Random", {
     ),
     nrow = 4
   )
-  
+
   L = 5
-  
+
   set.seed(Sys.time())
-  resultsRandom <- voter(input, 5)
-  resultsRandom2 <- voter(input, 5)
-  
+  resultsRandom <- voter(input, 5, .5)
+  resultsRandom2 <- voter(input, 5, .5)
+
   set.seed(123456789)
-  resultsNotRandom <- voter(input, 5)
-  resultsNotRandom2 <- voter(input, 5)
-  
+  resultsNotRandom <- voter(input, 5, .5)
+  set.seed(123456789)
+  resultsNotRandom2 <- voter(input, 5, .5)
+
   expect_equal(resultsRandom[["ground_truth"]], input)
   expect_equal(resultsRandom2[["ground_truth"]], input)
   expect_equal(resultsNotRandom[["ground_truth"]], input)
   expect_equal(resultsNotRandom2[["ground_truth"]], input)
-  
-  
+
+
   expect_false(isTRUE(all.equal(resultsRandom[["TS"]], resultsRandom2[["TS"]])))
-  expect_equal(resultsNotRandom[["ground_truth"]], resultsNotRandom2[["ground_truth"]])
+  expect_equal(resultsNotRandom[["TS"]], resultsNotRandom2[["TS"]])
 })
