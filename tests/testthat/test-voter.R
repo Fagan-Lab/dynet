@@ -51,8 +51,8 @@ test_that("Test Voter Model Dynamics Random", {
   L = 5
 
   set.seed(Sys.time())
-  resultsRandom <- voter(input, 5, .5)
-  resultsRandom2 <- voter(input, 5, .5)
+  resultsRandom <- voter(input, 5, "automatic")
+  resultsRandom2 <- voter(input, 5, "automatic")
 
   set.seed(123456789)
   resultsNotRandom <- voter(input, 5, .5)
