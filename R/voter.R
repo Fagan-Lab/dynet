@@ -42,7 +42,7 @@ voter <- function(inputMatrix, L, noise=NULL) {
   if (identical(noise, "automatic") || identical(noise, "auto")) {
     noise <- 1 / N
   } 
-  if (!is.numeric(noise) || is.null(noise)) {
+  if (!is.numeric(noise)) {
     stop("noise must be a number, 'automatic', or NULL")
   }
   
