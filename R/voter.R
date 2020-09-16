@@ -46,10 +46,6 @@ voter <- function(inputMatrix, L, noise=NULL) {
     stop("noise must be a number, 'automatic', or NULL")
   }
   
-  # igraph stores weights and edges separately, 
-  # to get around this I did not use the transition matrix directly. 
-  # I used it as reference/temp to calculate weights then later refer to weights with G[i]
-  #
   # get adj mat
   transitions = igraph::get.adjacency(G)  
   # sum cols of adjmat for n columns
