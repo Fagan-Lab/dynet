@@ -7,31 +7,18 @@
 #' Generates an N*L time series.
 #' The results dictionary also stores the time series as TS and ground truth adjacency matrix as ground_truth.
 #'
-#' @param inputMatrix the input (ground-truth) graph with `N` nodes. Must be valid square adjacency matrix.
+#' @param input_matrix the input (ground-truth) graph with `N` nodes. Must be valid square adjacency matrix.
 #' @param L the length of the desired time series.
 #' @param noise if noise is present, with this probability a node's state will be randomly redrawn from (-1,1) \cr
 #' independent of its neighbors' states. If 'automatic', set noise to 1/N.
 #' @return results a list with TS matrix an N*L array of synthetic time series data.
-
-
-# get dimensions of vertices helper function
-DIM <- function(...) {
-  args <- list(...)
-  lapply(args, function(x) {
-    if (is.null(dim(x))) {
-      return(length(x))
-    }
-    dim(x)
-  })
-}
-
 #' @export
-voter <- function(inputMatrix, L, noise = NULL) {
+voter <- function(input_matrix, L, noise = NULL) {
   # create return list
   results <- list()
 
   # get adj matrix
-  G <- igraph::graph_from_adjacency_matrix(inputMatrix, weighted = TRUE)
+  G <- igraph::graph_from_adjacency_matrix(input_matrix, weighted = TRUE)
   # get num of nodes in igraph obj
   N <- unlist(DIM(igraph::V(G)))
 
@@ -64,7 +51,7 @@ voter <- function(inputMatrix, L, noise = NULL) {
 
   # generate time series
   TS <- matrix(rep(0, N * L), nrow = N)
-  randNum <- runif(N) # random uniform distribution
+  randNum <- stats::runif(N) # random uniform distribution
   for (i in 1:nrow(TS)) {
     if (randNum[i] < .5) {
       TS[i, 1] <- 1
@@ -82,8 +69,8 @@ voter <- function(inputMatrix, L, noise = NULL) {
     for (i in indices) {
       TS[i, t] <- sample(c(TS[, t]), 1, replace = FALSE, prob = c(G[i]))
       if (!is.null(noise)) {
-        if (runif(1) < noise) {
-          if (runif(1) < .5) {
+        if (stats::runif(1) < noise) {
+          if (stats::runif(1) < .5) {
             TS[i, t] <- 1
           } else {
             TS[i, t] <- -1
@@ -92,8 +79,12 @@ voter <- function(inputMatrix, L, noise = NULL) {
       }
     }
   }
-  results[["ground_truth"]] <- inputMatrix
-  results[["TS"]] <- TS
 
-  return(results)
+  structure(
+    list(
+      TS = TS,
+      ground_truth = input_matrix
+    ),
+    class = "single-unbiased-random-walker"
+  )
 }
