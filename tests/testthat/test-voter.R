@@ -1,5 +1,15 @@
 context("Testing Voter Model Dynamics")
 
+with_seed <- function(seed, code) {
+  code <- substitute(code)
+  orig.seed <- .Random.seed
+  on.exit(.Random.seed <<- orig.seed)
+  set.seed(seed)
+  eval.parent(code)
+}
+
+SEED_VALUE <- 12345
+
 ### Voter Model Dynamics --------------------------------------------------
 test_that("Test Voter Model Dynamics Ground Truth", {
   input <- matrix(
@@ -12,10 +22,9 @@ test_that("Test Voter Model Dynamics Ground Truth", {
     nrow = 4
   )
 
-  L <- 5
-  results <- voter(input, L, .5)
+  results <- voter(input, 5, .5)
 
-  expect_equal(results[["ground_truth"]], input)
+  expect_equal(results$ground_truth, input)
 })
 
 test_that("Test Voter Model Dynamics Time Series Dimensions", {
@@ -29,11 +38,10 @@ test_that("Test Voter Model Dynamics Time Series Dimensions", {
     nrow = 4
   )
 
-  L <- 5
   results <- voter(input, 5)
 
-  expect_equal(nrow(results[["TS"]]), nrow(input))
-  expect_equal(ncol(results[["TS"]]), L)
+  expect_equal(nrow(results$TS), nrow(input))
+  expect_equal(ncol(results$TS), 5)
 })
 
 test_that("Test Voter Model Dynamics Random", {
@@ -47,23 +55,18 @@ test_that("Test Voter Model Dynamics Random", {
     nrow = 4
   )
 
-  L <- 5
+  results_random <- voter(input, 5, "automatic")
+  results_random2 <- voter(input, 5, "automatic")
 
-  set.seed(Sys.time())
-  resultsRandom <- voter(input, 5, "automatic")
-  resultsRandom2 <- voter(input, 5, "automatic")
+  expect_equal(results_random$ground_truth, input)
+  expect_equal(results_random2$ground_truth, input)
 
-  set.seed(123456789)
-  resultsNotRandom <- voter(input, 5, .5)
-  set.seed(123456789)
-  resultsNotRandom2 <- voter(input, 5, .5)
+  with_seed(SEED_VALUE, {
+    results_not_random <- voter(input, 5, .5)
+    results_not_random2 <- voter(input, 5, .5)
 
-  expect_equal(resultsRandom[["ground_truth"]], input)
-  expect_equal(resultsRandom2[["ground_truth"]], input)
-  expect_equal(resultsNotRandom[["ground_truth"]], input)
-  expect_equal(resultsNotRandom2[["ground_truth"]], input)
-
-
-  expect_false(isTRUE(all.equal(resultsRandom[["TS"]], resultsRandom2[["TS"]])))
-  expect_equal(resultsNotRandom[["TS"]], resultsNotRandom2[["TS"]])
+    expect_equal(results_not_random$ground_truth, input)
+    expect_equal(results_not_random2$ground_truth, input)
+    expect_false(identical(results_random$TS, results_random2$TS))
+  })
 })
