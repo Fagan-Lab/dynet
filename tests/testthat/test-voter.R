@@ -11,12 +11,11 @@ test_that("Test Voter Model Dynamics Ground Truth", {
     ),
     nrow = 4
   )
-  
-  L = 5
+
+  L <- 5
   results <- voter(input, L, .5)
-  
+
   expect_equal(results[["ground_truth"]], input)
-  
 })
 
 test_that("Test Voter Model Dynamics Time Series Dimensions", {
@@ -30,7 +29,7 @@ test_that("Test Voter Model Dynamics Time Series Dimensions", {
     nrow = 4
   )
 
-  L = 5
+  L <- 5
   results <- voter(input, 5)
 
   expect_equal(nrow(results[["TS"]]), nrow(input))
@@ -48,7 +47,7 @@ test_that("Test Voter Model Dynamics Random", {
     nrow = 4
   )
 
-  L = 5
+  L <- 5
 
   set.seed(Sys.time())
   resultsRandom <- voter(input, 5, "automatic")
