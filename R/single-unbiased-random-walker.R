@@ -13,9 +13,6 @@
 #' @return results a list with TS matrix an N*L array of synthetic time series data.
 #' @export
 single_unbiased_random_walker <- function(input_matrix, L, initial_node = NULL) {
-  # create return list
-  results <- list()
-
   # get adj matrix and set up vector of indices
   G <- igraph::graph_from_adjacency_matrix(input_matrix, weighted = TRUE)
   A <- igraph::get.adjacency(G)
