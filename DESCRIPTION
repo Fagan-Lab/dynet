@@ -18,7 +18,9 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 Suggests:
-    testthat
+    testthat,
+    spelling
 Imports:
     igraph
 RoxygenNote: 6.1.0
+Language: en-US
