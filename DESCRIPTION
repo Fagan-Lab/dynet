@@ -19,3 +19,6 @@ Encoding: UTF-8
 LazyData: true
 Suggests:
     testthat
+Imports:
+    igraph
+RoxygenNote: 6.1.0
