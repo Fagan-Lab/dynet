@@ -11,7 +11,8 @@ Authors@R: c(
     person("William", "Fagan", email = "bfagan@umd.edu",
            role = c("aut"))
     )
-Description: Network Dynamics
+Description: This package relates to network dynamics.
+  Run simulations over graphs.
 License: MIT + file LICENSE
 Depends:
     R (>= 3.2.0)
@@ -21,6 +22,7 @@ Suggests:
     testthat,
     spelling
 Imports:
-    igraph
+    igraph,
+    stats
 RoxygenNote: 6.1.0
 Language: en-US
