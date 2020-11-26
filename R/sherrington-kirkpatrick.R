@@ -2,26 +2,24 @@
 #'
 #' Simulate Kinetic Ising model dynamics on a ground truth network
 #'
-#' @param input_matrix the input (ground-truth) graph with `N` nodes. Must be valid square adjacency matrix.
-#' @param L the length of the desired time series.
-#' @param noise true or false value to generate noise
+#' @param input_matrix The input (ground-truth) adjacency matrix of a graph with `N` nodes. Must be valid square adjacency matrix.
+#' @param L The length of the desired time series.
+#' @param noise True or false value to generate noise
 #' @return An N * L array of synthetic time series data
 #' @export
-simulate <- function(input_matrix, L, noise = FALSE) {
+simulate_sherrington <- function(input_matrix, L, noise = FALSE) {
   # create return list
   results <- list()
 
-  # get adj matrix
-  G <- igraph::graph_from_adjacency_matrix(input_matrix, weighted = TRUE)
   # get num of nodes in igraph obj
-  N <- unlist(DIM(igraph::V(G)))
+  N <- ncol(input_matrix)
 
   # get transition probability matrix of G
-  A <- igraph::get.adjacency(G)
-  W <- matrix(data = 0, nrow = nrow(m), ncol = ncol(m))
+  A <- input_matrix
+  W <- matrix(data = 0, nrow = N, ncol = N)
   for (i in 1:nrow(A)) {
     if (sum(A[,i]) > 0) {
-      w[,i] = A[,i] / sum(A[,i])
+      W[,i] = A[,i] / sum(A[,i])
     }
   }
 
@@ -33,10 +31,10 @@ simulate <- function(input_matrix, L, noise = FALSE) {
     h <- sum(W * ts[i,])
     p <- 1 / (1 + exp(-2 * h))
     if (noise) {
-      ts[i+1,] = p - rnorm(N)
+      ts[i+1,] = p - stats::rnorm(N)
     }
     else {
-      temp = as.vector(p - rnorm(N))
+      temp = as.vector(p - stats::rnorm(N))
       temp[temp < 0] <- -1.0
       temp[temp >= 0] <- 1.0
       ts[i+1,] = temp

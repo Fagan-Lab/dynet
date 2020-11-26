@@ -23,6 +23,7 @@ Suggests:
     spelling
 Imports:
     igraph,
-    stats
+    stats,
+    deTestSet
 RoxygenNote: 7.1.1
 Language: en-US
