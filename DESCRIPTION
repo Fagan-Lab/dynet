@@ -24,6 +24,8 @@ Suggests:
 Imports:
     igraph,
     stats,
-    deTestSet
+    deTestSet,
+    pracma,
+    deSolve
 RoxygenNote: 7.1.1
 Language: en-US
