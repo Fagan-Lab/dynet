@@ -11,7 +11,7 @@ Dynet allows the user to run simulations over a network.
 You can install the released version of constructnet from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("constructnet")
+install.packages("dynet")
 ```
 
 ## Development

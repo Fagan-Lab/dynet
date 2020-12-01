@@ -20,7 +20,9 @@ Encoding: UTF-8
 LazyData: true
 Suggests:
     testthat,
-    spelling
+    spelling,
+    knitr,
+    rmarkdown
 Imports:
     igraph,
     stats,
@@ -29,3 +31,4 @@ Imports:
     deSolve
 RoxygenNote: 7.1.1
 Language: en-US
+VignetteBuilder: knitr

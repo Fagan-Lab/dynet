@@ -1,7 +1,2 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-^\.circleci$
-^\.circleci/config\.yml$
-^CODE_OF_CONDUCT\.md$
-^cran-comments\.md$
-^Makefile$
+^doc$
+^Meta$

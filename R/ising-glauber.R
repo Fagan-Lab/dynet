@@ -2,9 +2,9 @@
 #'
 #' Simulate Kuramoto model on a ground truth network
 #'
-#' @param input_matrix The input (ground-truth) adjacency matrix of a graph with `N` nodes. Must be valid square adjacency matrix.
+#' @param input_matrix The input (ground-truth) adjacency matrix of a graph with N nodes. Must be valid N*N square adjacency matrix.
 #' @param L Integer length of the desired time series.
-#' @param init Vector iniitla condition, which must have binary value (0 or 1).
+#' @param init Vector initial condition, which must have binary value (0 or 1) and must have length N
 #' @param beta Float  Inverse temperature tuning the likelihood that a node switches its state. Default to 2.
 #' @return An N * L observations on N nodes.
 #' @export

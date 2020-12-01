@@ -1,0 +1,190 @@
+---
+title: "dynet"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dynet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dynet)
+```
+
+# Ising Glauber #
+  In the Ising-Glauber model, each node has a binary state. At every
+        time step, nodes switch their state with certain probability. For
+        inactive nodes, this probability is 
+        $\frac{1}{(1+e^{\beta(k - 2m)/k})}$
+   where is a parameter tuning the likelihood
+        of switching state, $k$ is degree of the node and $m$
+        is the number of its active neighbors; for active nodes the
+        switch-state probability is $1-\frac{1}{(1+e^{\beta(k-2m)/k}})$ instead.
+        
+      
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.#
+* **init** Vector initial condition, which must have binary value ($0$ or $1$).
+* **beta** Float  Inverse temperature tuning the likelihood that a node switches its state. Default to $2$.
+
+## Returns ##
+* An $N\times L$ observations on N nodes.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+    cbind(
+        c(1.0, 1.0, 2.0, 3.0),
+        c(0.0, 0.0, 1.0, 0.0),
+        c(0.0, 0.0, 0.0, 1.0),
+        c(0.0, 0.0, 0.0, 0.0)
+    ),
+    nrow = 4
+)
+dynet::simulate_ising(input, L = 3, init = NULL, beta = 2)
+dynet::simulate_ising(input, L = 3, init = c(1, 2, 3, 4), beta = 4)
+```
+
+# Kuramoto #
+Simulate Kuramoto model on a ground truth network.
+        Kuramoto oscillators model synchronization processes. At each time
+        step, each node adjusts its phase $\theta_i$ according to the
+        equation
+        $\theta_i=\omega_i + \frac{\lambda}{N}\sum_{j=1}^{N}\sin\left(\theta_j - \theta_i\right)$
+ where $\lambda$, is a coupling $strength$ parameter and each node
+        has an internal frequency $\omega_i$; the $freqs$ function
+        parameter provides the option to initialize these frequencies with
+        user-defined values (or leave as $NULL$ to randomly initialize). Each
+        node's initial phase $\theta_{i0}$ can be randomly initialized
+        (the default behavior) or set by specifying the `phases` parameter.
+        The results list also stores the ground truth network as
+        $groundtruth$ and the internal frequencies of the process as
+        $internalfrequencies$
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.
+* **dt** Float size of timestep for numerical integration.
+* **strength** Float coupling strength (prefactor for interaction terms).
+* **phases** Vector of of initial phases.
+* **freqs** Vector of internal frequencies.
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1,0,0),
+    c(0,1,0),
+    c(0,1,0)
+  ),
+  ncol = 3
+)
+dynet::simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1,2,3), freqs = c(1.0, 1.05,1.06))
+dynet::simulate_kuramoto(input, 3)
+```
+
+# Sherrington-Kirkpatrick #
+Simulate Kinetic Ising model dynamics on a ground truth network.
+        The results dictionary also stores the ground truth network as
+        $groundtruth$.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.
+* **noise** TRUE or FALSE value to generate noise
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1.0, 1.0, 2.0, 3.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+  nrow = 4
+)
+dynet::simulate_sherrington(input, 5, noise = TRUE)
+dynet::simulate_sherrington(input, 10)
+```
+
+# Single Unbaised Random Walker #
+Simulate single random-walker dynamics on a ground truth network.
+        Generates an $N\times L$ time series $TS$ with
+        $TS[j,t]==1$ if the walker is at node $j$ at time
+        $t$, and $TS[j,t]==0$ otherwise.
+        The results dictionary also stores the ground truth network as
+        $groundtruth$.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.
+* **initial_node** Starting node for walk
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1, 1, 0, 0),
+    c(1, 1, 0, 0),
+    c(0, 0, 1, 1),
+    c(0, 0, 1, 1)
+  ),
+  nrow = 4
+)
+dynet::single_unbiased_random_walker(input, 4)
+dynet::single_unbiased_random_walker(input, 5, 2)
+```
+
+# Voter #
+Simulate voter-model-style dynamics on a network.
+        Nodes are randomly assigned a state in ${-1, 1}$; at each
+        time step all nodes asynchronously update by choosing their new
+        state uniformly from their neighbors. Generates an $N\times L$ time series.
+        The results dictionary also stores the ground truth network as
+        `'ground_truth'`.
+
+## Params ##
+#' @param noise if noise is present, with this probability a node's state will be randomly redrawn from (-1,1) \cr
+#' independent of its neighbors' states. If 'automatic', set noise to 1/N.
+#' @return results a list with TS matrix an N*L array of synthetic time series data.
+
+
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.
+* **noise** If noise is present, with this probability a node's state will be randomly redrawn from $(-1,1)$ independent of its neighbors' states. If omitted,  set noise to $1/N$.
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1.0, 1.0, 2.0, 3.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+  nrow = 4
+)
+dynet::voter(input, 5, .5)
+dynet::voter(input, 10)
+```

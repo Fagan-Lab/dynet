@@ -38,7 +38,7 @@ test_that("Test Random Walker Time Series Dimensions", {
     nrow = 4
   )
 
-  results <- single_unbiased_random_walker(input, 5)
+  results <- single_unbiased_random_walker(input, 5, 2)
 
   expect_equal(ncol(results$TS), 5)
 })
