@@ -4,11 +4,11 @@
 [![CircleCI build status](https://circleci.com/gh/Fagan-Lab/dynet.svg?style=svg)](https://circleci.com/gh/Fagan-Lab/dynet)
 <!-- badges: end -->
 
-Dynet allows the user to run simulations over a network.
+Dynet allows the user to run simulations over a network, in order to create a time-series.
 
 ## Installation
 
-You can install the released version of constructnet from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of dynet from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("dynet")
