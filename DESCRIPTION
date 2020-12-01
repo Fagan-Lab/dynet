@@ -5,9 +5,9 @@ Version: 0.1.0.9000
 Authors@R: c(
     person("Travis", "Byrum", email = "tbyrum@terpmail.umd.edu",
            role = c("aut", "cre")),
+    person("Luke", "Perry", role = c("aut")),
     person("Anshuman", "Swain", email = "answain@terpmail.umd.edu",
            role = c("aut")),
-    person("Luke", "Perry", role = c("aut")),
     person("William", "Fagan", email = "bfagan@umd.edu",
            role = c("aut"))
     )
