@@ -22,11 +22,11 @@ library(dynet)
   In the Ising-Glauber model, each node has a binary state. At every
         time step, nodes switch their state with certain probability. For
         inactive nodes, this probability is 
-        $\frac{1}{(1+e^{\beta(k - 2m)/k})}$
+        $\frac{1}{1+e^{\beta(k - 2m)/k}}$
    where is a parameter tuning the likelihood
         of switching state, $k$ is degree of the node and $m$
         is the number of its active neighbors; for active nodes the
-        switch-state probability is $1-\frac{1}{(1+e^{\beta(k-2m)/k}})$ instead.
+        switch-state probability is $1-\frac{1}{1+e^{\beta(k-2m)/k}}$ instead.
         
       
 ## Params ##
@@ -92,6 +92,46 @@ input <- matrix(
 )
 dynet::simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1,2,3), freqs = c(1.0, 1.05,1.06))
 dynet::simulate_kuramoto(input, 3)
+```
+
+# Lotka-Volterra #
+Simulate time series on a network from the Lotka-Volterra model.
+        The Lotka-Volterra model was designed to describe dynamics of
+        species abundances in an ecosystem. Species $i$s abundance
+        change per time is $\frac{dX_i}{d t}=r_iX_i(1-\frac{X_i}{K_i}+\sum_{j\neq i}W_{ij}\frac{X_j}{K_i})$
+        where $r_i$ and $K_i$ are the growth rate and the
+        carrying capacity of species $i$respectively, and
+        :math:$W_{ij}$ are the relative interaction strength of species
+        $j$ on $i$.
+        The results dictionary also stores the ground truth network as
+        $groundtruth$ and the intermediate time steps as $timesteps$.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired time series.
+* **init** Initial condition vector. If not specified an initial condition is uniformly generated from 0 to the nodes' carrying capacity.
+* **gr** Growth rate vector. If not specified, default to 1 for all nodes.
+* **cap** Carrying capacity vector. If not specified, default to 1 for all nodes.
+* **inter** $N\times N$ Matrix of interaction weights between nodes. If not specified, default to a zero-diagonal matrix whose ${i,j}$ entry is $(j - i)/(N-1)$
+* **dt** Float or vector of sizes of time steps when simulating the continuous-time dynamics.
+* **stochastic** Boolean determining whether to simulate the stochastic or deterministic dynamics.
+* **pertb** Vector of perturbation magnitude of nodes' growth. If not specified, default to 0.01 for all nodes.
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1,0,0),
+    c(0,1,0),
+    c(0,1,0)
+  ),
+  ncol = 3
+)
+dynet::simulate_lotka(input, L = 3, init = c(0.9662720, 0.7750888, 0.9066647), dt = c(5,3,1))
+dynet::simulate_sherrington(input, 10)
 ```
 
 # Sherrington-Kirkpatrick #
