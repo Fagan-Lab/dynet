@@ -18,8 +18,8 @@ simulate_sherrington <- function(input_matrix, L, noise = FALSE) {
   A <- input_matrix
   W <- matrix(data = 0, nrow = N, ncol = N)
   for (i in 1:nrow(A)) {
-    if (sum(A[,i]) > 0) {
-      W[,i] = A[,i] / sum(A[,i])
+    if (sum(A[, i]) > 0) {
+      W[, i] <- A[, i] / sum(A[, i])
     }
   }
 
@@ -27,17 +27,17 @@ simulate_sherrington <- function(input_matrix, L, noise = FALSE) {
   ts <- matrix(data = 1, nrow = L, ncol = N)
 
   # iterate size of time series
-  for (i in 2:L-1) {
-    h <- sum(W * ts[i,])
+  for (i in 2:L - 1) {
+    h <- sum(W * ts[i, ])
     p <- 1 / (1 + exp(-2 * h))
     if (noise) {
-      ts[i+1,] = p - stats::rnorm(N)
+      ts[i + 1, ] <- p - stats::rnorm(N)
     }
     else {
-      temp = as.vector(p - stats::rnorm(N))
+      temp <- as.vector(p - stats::rnorm(N))
       temp[temp < 0] <- -1.0
       temp[temp >= 0] <- 1.0
-      ts[i+1,] = temp
+      ts[i + 1, ] <- temp
     }
   }
 

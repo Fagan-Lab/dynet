@@ -19,17 +19,17 @@ simulate_ising <- function(input_matrix, L, init = NULL, beta = 2) {
   if (is.null(init)) {
     init <- stats::runif(N)
   }
-  ts[,1] <- round(init)
+  ts[, 1] <- round(init)
   # simulate time series
-  for (t in 1:(L-1)) {
-    state <- ts[,t]
+  for (t in 1:(L - 1)) {
+    state <- ts[, t]
     num_act_nei <- state %*% input_matrix
     hamltn <- (degs - 2 * num_act_nei) / degs
     thrds <- 1 / (1 + exp(beta * hamltn))
     # probabilty of switching state
     probs <- ifelse(state == 1, thrds, 1 - thrds)
     next_ <- ifelse(stats::runif(N) < probs, 1 - state, state)
-    ts[,t+1] <- next_
+    ts[, t + 1] <- next_
   }
 
   structure(

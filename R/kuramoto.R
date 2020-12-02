@@ -52,11 +52,11 @@ simulate_kuramoto <- function(input_matrix, L, dt = 0.01, strength = 0, phases =
   parms <- c(g = omega, strength = strength, input_matrix = input_matrix)
   init <- theta_0
   out <- deSolve::ode(y = init, times = times, func = ddt_theta, parms = parms)
-  out <- out[,-1]
+  out <- out[, -1]
   ts <- out
   ts <- ts %% (2 * pi)
   ts <- pracma::flipdim(aperm(ts))
-  rownames(ts)<-NULL
+  rownames(ts) <- NULL
 
   structure(
     list(

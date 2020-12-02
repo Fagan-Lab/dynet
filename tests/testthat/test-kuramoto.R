@@ -30,9 +30,9 @@ test_that("Test Kuramoto Model Dynamics Ground Truth", {
 test_that("Test Kuramoto Model Dynamics Time Series Dimensions", {
   input <- matrix(
     cbind(
-      c(1,0,0),
-      c(0,1,0),
-      c(0,1,0)
+      c(1, 0, 0),
+      c(0, 1, 0),
+      c(0, 1, 0)
     ),
     ncol = 3
   )
@@ -73,16 +73,14 @@ test_that("Test Kuramoto Model Dynamics Random", {
 test_that("Test Kuramoto Model Dynamics Non-Random", {
   input <- matrix(
     cbind(
-      c(1,0,0),
-      c(0,1,0),
-      c(0,1,0)
+      c(1, 0, 0),
+      c(0, 1, 0),
+      c(0, 1, 0)
     ),
     ncol = 3
   )
 
-  func_output <- simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1,2,3), freqs = c(1.0, 1.05,1.06))
-  func_output2 <- simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1,2,3), freqs = c(1.0, 1.05,1.06))
+  func_output <- simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1, 2, 3), freqs = c(1.0, 1.05, 1.06))
+  func_output2 <- simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1, 2, 3), freqs = c(1.0, 1.05, 1.06))
   expect_equal(round(func_output$TS, 3), round(func_output2$TS, 3))
-
 })
-

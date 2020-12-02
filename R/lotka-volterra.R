@@ -13,7 +13,7 @@
 #' @param pertb Vector of perturbation magnitude of nodes' growth. If not specified, default to 0.01 for all nodes.
 #' @return An N * L array of synthetic time series data.
 #' @export
-simulate_lotka <- function(input_matrix, L, init=NULL, gr=NULL, cap=NULL, inter=NULL, dt=1e-2, stochastic=TRUE, pertb=NULL) {
+simulate_lotka <- function(input_matrix, L, init = NULL, gr = NULL, cap = NULL, inter = NULL, dt = 1e-2, stochastic = TRUE, pertb = NULL) {
   # create return list
   results <- list()
 
@@ -45,7 +45,7 @@ simulate_lotka <- function(input_matrix, L, init=NULL, gr=NULL, cap=NULL, inter=
   if (is.null(init)) {
     init <- stats::runif(1, min = 0, max = cap)
   }
-  ts[,0] <- init
+  ts[, 0] <- init
 
   # define the function of dynamics
   mat <- ifelse(input_matrix == 1, inter, 0.0) + diag(rep(-1, N))
@@ -62,24 +62,27 @@ simulate_lotka <- function(input_matrix, L, init=NULL, gr=NULL, cap=NULL, inter=
 
   # deterministic dynamics
   if (stochastic) {
-    tryCatch( {
-      out <- deTestSet::dopri5(y = init, func = dyn, times = 0:sum(dt), parms = NULL)
-      for (i in 1:L-1) {
-        ts[i+1,] <- out[dt[i]+1,][1:length(init)+1]
+    tryCatch(
+      {
+        out <- deTestSet::dopri5(y = init, func = dyn, times = 0:sum(dt), parms = NULL)
+        for (i in 1:L - 1) {
+          ts[i + 1, ] <- out[dt[i] + 1, ][1:length(init) + 1]
+        }
+      },
+      error = function(e) {
+        message <- "Integration not successful. Change sizes of time steps or parameters."
       }
-    }, error = function(e) {
-      message <- "Integration not successful. Change sizes of time steps or parameters."
-    })
+    )
   }
   else {
-    for (t in 1:L-1) {
-      state <- ts[,t]
+    for (t in 1:L - 1) {
+      state <- ts[, t]
       next_ <- state + (state * (gr + (mat %*% state)) * dt[t])
       next_ <- next_ + (state * stats::rnorm(1, sd = 4) * sqrt(dt[t]))
-      ts[,t+1] <- next
+      ts[, t + 1] <- next
     }
   }
-  ts[is.na(ts)] = 0
+  ts[is.na(ts)] <- 0
 
   structure(
     list(
