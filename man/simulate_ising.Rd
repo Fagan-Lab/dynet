@@ -7,11 +7,11 @@
 simulate_ising(input_matrix, L, init = NULL, beta = 2)
 }
 \arguments{
-\item{input_matrix}{The input (ground-truth) adjacency matrix of a graph with `N` nodes. Must be valid square adjacency matrix.}
+\item{input_matrix}{The input (ground-truth) adjacency matrix of a graph with N nodes. Must be valid N*N square adjacency matrix.}
 
 \item{L}{Integer length of the desired time series.}
 
-\item{init}{Vector iniitla condition, which must have binary value (0 or 1).}
+\item{init}{Vector initial condition, which must have binary value (0 or 1) and must have length N}
 
 \item{beta}{Float  Inverse temperature tuning the likelihood that a node switches its state. Default to 2.}
 }
