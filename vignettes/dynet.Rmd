@@ -1,0 +1,213 @@
+---
+title: "dynet"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dynet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dynet)
+```
+
+# Ising Glauber #
+  Implementation of the Ising-Glauber model. Each node in the Ising-Glauber model has a binary state. The nodes in the graph switch 
+  their state with certain probability at every time step. But for inactive nodes, this probability is 
+        $\frac{1}{1+e^{\beta(k - 2m)/k}}$
+   where the $\beta$ parameter is a likelehood tuning of switching state, and $k$ is the degree of the node and $m$
+        is the number of neighbors that activate. The
+        switch-state probability for active nodes is $1-\frac{1}{1+e^{\beta(k-2m)/k}}$ instead.
+        The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated
+        
+        
+      
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **init** Vector initial condition, which must be $0$ or $1$.
+* **beta** Float Inverse temperature tuning the likelihood that a node switches its state. Default to $2$.
+
+## Returns ##
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated
+    
+## Code Example ##
+```{r}
+input <- matrix(
+    cbind(
+        c(1.0, 1.0, 2.0, 3.0),
+        c(0.0, 0.0, 1.0, 0.0),
+        c(0.0, 0.0, 0.0, 1.0),
+        c(0.0, 0.0, 0.0, 0.0)
+    ),
+    nrow = 4
+)
+dynet::simulate_ising(input, L = 3, init = NULL, beta = 2)
+dynet::simulate_ising(input, L = 3, init = c(1, 2, 3, 4), beta = 4)
+```
+
+# Kuramoto #
+Implememation of Kuramoto oscillators model. Each node at each step
+        adjusts its phase $\theta_i$ according to the
+        equation
+        $\theta_i=\omega_i + \frac{\lambda}{N}\sum_{j=1}^{N}\sin\left(\theta_j - \theta_i\right)$
+ where $\lambda$, is a coupling $strength$ parameter and the internal frequency of each node is $\omega_i$. 
+ The $freqs$ function
+        parameter is an optional user-defined initialization frequencies. The $phases$ parameter enables each
+        node's initial phase $\theta_{i0}$ to be randomly initialized. 
+       The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated, and $N$ the internal frequencies.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **dt** Float size of timestep for numerical integration.
+* **strength** Float coupling strength (prefactor for interaction terms).
+* **phases** Vector of of initial phases.
+* **freqs** Vector of internal frequencies.
+
+## Returns ##
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated, and $N$ the internal frequencies.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1,0,0),
+    c(0,1,0),
+    c(0,1,0)
+  ),
+  ncol = 3
+)
+dynet::simulate_kuramoto(input, 3, dt = 1, strength = 1, phases = c(1,2,3), freqs = c(1.0, 1.05,1.06))
+dynet::simulate_kuramoto(input, 3)
+```
+
+# Lotka-Volterra #
+Implementation of the Lotka-Volterra model.
+        Species abundances in an ecosystem is described by the Lotka-Volterra model describes dynamics. 
+        Species $i$s abundance change per time is $\frac{dX_i}{d t}=r_iX_i(1-\frac{X_i}{K_i}+\sum_{j\neq i}W_{ij}\frac{X_j}{K_i})$
+        where $r_i$ and $K_i$ are the respective growth rate carrying capacity of the species $i$, 
+        and $W_{i,j}$ are relative interaction strengths of the species
+        $j$ on $i$.
+        The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated, and the number of time steps.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **init** Initial condition vector. If not specified an initial condition is uniformly generated from 0 to the nodes' carrying capacity.
+* **gr** Growth rate vector. If not specified, default to 1 for all nodes.
+* **cap** Carrying capacity vector. If not specified, default to 1 for all nodes.
+* **inter** $N\times N$ Matrix of interaction weights between nodes. If not specified, default to a zero-diagonal matrix whose ${i,j}$ entry is $(j - i)/(N-1)$
+* **dt** Float or vector of sizes of time steps when simulating the continuous-time dynamics.
+* **stochastic** Boolean determining whether to simulate the stochastic or deterministic dynamics.
+* **pertb** Vector of perturbation magnitude of nodes' growth. If not specified, default to 0.01 for all nodes.
+
+## Returns ##
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated, and the number of time steps.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1,0,0),
+    c(0,1,0),
+    c(0,1,0)
+  ),
+  ncol = 3
+)
+dynet::simulate_lotka(input, L = 3, init = c(0.9662720, 0.7750888, 0.9066647), dt = c(5,3,1))
+dynet::simulate_lotka(input, L = 10)
+```
+
+# Sherrington-Kirkpatrick #
+Implementation of simulating the Sherrington-Kirkpatrick dynamics on an initial $N\times N$ ground truth.
+        The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **noise** TRUE or FALSE value to generate noise
+
+## Returns ##
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1.0, 1.0, 2.0, 3.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+  nrow = 4
+)
+dynet::simulate_sherrington(input, 5, noise = TRUE)
+dynet::simulate_sherrington(input, 10)
+```
+
+# Single Unbaised Random Walker #
+Implementation of simulating the single random-walker dynamics on an initial $N\times N$ ground truth.
+        This function generates an $N\times L$ time series generated synthetically $TS$ with
+        $TS[j,t]==1$ if the walker is at node $j$ at time
+        $t$, and $TS[j,t]==0$ otherwise.
+        The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated.
+        
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **initial_node** Starting node for walk
+
+## Returns ##
+* An $N\times L$ matrix of synthetic time series data.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1, 1, 0, 0),
+    c(1, 1, 0, 0),
+    c(0, 0, 1, 1),
+    c(0, 0, 1, 1)
+  ),
+  nrow = 4
+)
+dynet::single_unbiased_random_walker(input, 4)
+dynet::single_unbiased_random_walker(input, 5, 2)
+```
+
+# Voter #
+Implementation of simulating voter dynamics on a network.
+        The nodes in the initial ground truth network are randomly assigned a state of either ${-1, 1}$. During every time
+        all nodes are updated asynchronously by choosing new
+        state uniformly from their neighbors. The resulting list stores the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated.
+
+## Params ##
+* **input_matrix** The input (ground-truth) adjacency matrix of a graph with $N$ nodes. Must be valid square adjacency matrix.
+* **L** Integer length of the desired synthetically generated time series.
+* **noise** If noise is present, with this probability a node's state will be randomly redrawn from $(-1,1)$ independent of its neighbors' states. If omitted,  set noise to $1/N$.
+
+## Returns ##
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated.
+    
+## Code Example ##
+```{r}
+input <- matrix(
+  cbind(
+    c(1.0, 1.0, 2.0, 3.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+  nrow = 4
+)
+dynet::voter(input, 5, .5)
+dynet::voter(input, 10)
+```
