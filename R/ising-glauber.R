@@ -37,6 +37,6 @@ simulate_ising <- function(input_matrix, L, init = NULL, beta = 2) {
       TS = ts,
       ground_truth = input_matrix
     ),
-    class = "lotka-volterra"
+    class = "ising-glauber"
   )
 }
