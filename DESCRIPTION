@@ -12,7 +12,7 @@ Authors@R: c(
            role = c("aut"))
     )
 Description: This package relates to network dynamics.
-  Run simulations over graphs. Inspired by https://github.com/netsiphd/netrd/tree/master/netrd/dynamics.
+  Run simulations over graphs. Inspired by https://github.com/netsiphd/netrd/tree/master/netrd/dynamics. Install using devtools::install_github.
 License: MIT + file LICENSE
 Depends:
     R (>= 3.2.0)

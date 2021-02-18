@@ -6,3 +6,4 @@
 ^.circleci$
 ^CODE_OF_CONDUCT.md$
 ^cran-comments.md$
+^\.github$
