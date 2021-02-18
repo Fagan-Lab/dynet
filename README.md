@@ -8,10 +8,10 @@ Dynet allows the user to run simulations over a network, in order to create a ti
 
 ## Installation
 
-You can install the released version of dynet from [CRAN](https://CRAN.R-project.org) with:
+You can install the current version of the package from GitHub directly using (through the devtools package):
 
 ``` r
-install.packages("dynet")
+install_github("Fagan-Lab/dynet")
 ```
 
 ## Development
