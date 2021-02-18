@@ -1,7 +1,6 @@
 # dynet
 
 <!-- badges: start -->
-[![CircleCI build status](https://circleci.com/gh/Fagan-Lab/dynet.svg?style=svg)](https://circleci.com/gh/Fagan-Lab/dynet)
 [![R build status](https://github.com/travisbyrum/dynet/workflows/R-CMD-check/badge.svg)](https://github.com/travisbyrum/dynet/actions)
 <!-- badges: end -->
 
