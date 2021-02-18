@@ -14,9 +14,6 @@
 #' @return An N * L array of synthetic time series data.
 #' @export
 simulate_lotka <- function(input_matrix, L, init = NULL, gr = NULL, cap = NULL, inter = NULL, dt = 1e-2, stochastic = TRUE, pertb = NULL) {
-  # create return list
-  results <- list()
-
   # get num of nodes in adj matrix
   N <- ncol(input_matrix)
 
@@ -28,8 +25,6 @@ simulate_lotka <- function(input_matrix, L, init = NULL, gr = NULL, cap = NULL, 
     cap <- rep(1, N)
   }
   if (is.null(inter)) {
-    wei <- 1 / (N - 1)
-    full <- matrix(data = wei, nrow = N, ncol = N)
     inter <- matrix(data = 0, nrow = N, ncol = N)
     inter_uppertri <- inter[lower.tri(inter)] <- 0
     inter_lowertri <- inter[upper.tri(inter)] <- 0

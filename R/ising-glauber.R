@@ -9,9 +9,6 @@
 #' @return An N * L observations on N nodes.
 #' @export
 simulate_ising <- function(input_matrix, L, init = NULL, beta = 2) {
-  # create return list
-  results <- list()
-
   # get num of nodes in adj matrix
   N <- ncol(input_matrix)
   degs <- sum(input_matrix)

@@ -14,14 +14,10 @@
 #' @return results a list with TS matrix an N*L array of synthetic time series data.
 #' @export
 voter <- function(input_matrix, L, noise = NULL) {
-  # create return list
-  results <- list()
-
   # get adj matrix
   G <- igraph::graph_from_adjacency_matrix(input_matrix, weighted = TRUE)
   # get num of nodes in igraph obj
   N <- unlist(DIM(igraph::V(G)))
-
 
   # noise input validation
   if (is.null(noise)) {
