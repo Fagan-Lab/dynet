@@ -8,7 +8,7 @@
 #' @param strength Float coupling strength (prefactor for interaction terms).
 #' @param phases Vector of of initial phases.
 #' @param freqs Vector of internal frequencies.
-#' @return An N * L array of synthetic time series data.
+#' @return List with TS matrix containing an N*L array of synthetic time series data.
 #' @export
 simulate_kuramoto <- function(input_matrix, L, dt = 0.01, strength = 0, phases = NULL, freqs = NULL) {
   # create return list

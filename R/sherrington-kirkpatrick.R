@@ -5,7 +5,7 @@
 #' @param input_matrix The input (ground-truth) adjacency matrix of a graph with `N` nodes. Must be valid square adjacency matrix.
 #' @param L The length of the desired time series.
 #' @param noise True or false value to generate noise
-#' @return An N * L array of synthetic time series data
+#' @return List with TS matrix containing an N*L array of synthetic time series data.
 #' @export
 simulate_sherrington <- function(input_matrix, L, noise = FALSE) {
   # create return list

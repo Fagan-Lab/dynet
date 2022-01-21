@@ -10,7 +10,7 @@
 #' @param input_matrix the input (ground-truth) graph with N nodes. Must be valid square adjacency matrix.
 #' @param L the length of the desired time series.
 #' @param initial_node starting node for walk
-#' @return results a list with TS matrix an N*L array of synthetic time series data.
+#' @return List with TS matrix containing an N*L array of synthetic time series data.
 #' @export
 single_unbiased_random_walker <- function(input_matrix, L, initial_node = NULL) {
   # get adj matrix and set up vector of indices
