@@ -1,4 +1,4 @@
-#' Implementation to simulate a Ising-Glauber model of oscillators
+#' Implementation to simulate time series on a network from the Ising-Glauber model 
 #'
 #' Simulate Ising-Glauber model on a ground truth network
 #'
