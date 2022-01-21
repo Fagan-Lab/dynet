@@ -1,6 +1,6 @@
-#' Implementation to simulate a Kuramoto model of oscillators
+#' Implementation to simulate time series on a network from the Ising-Glauber model 
 #'
-#' Simulate Kuramoto model on a ground truth network
+#' Simulate Ising-Glauber model on a ground truth network
 #'
 #' @param input_matrix The input (ground-truth) adjacency matrix of a graph with N nodes. Must be valid N*N square adjacency matrix.
 #' @param L Integer length of the desired time series.
