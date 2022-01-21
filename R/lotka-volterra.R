@@ -11,7 +11,7 @@
 #' @param dt Float or vector of sizes of time steps when simulating the continuous-time dynamics.
 #' @param stochastic Boolean determining whether to simulate the stochastic or deterministic dynamics.
 #' @param pertb Vector of perturbation magnitude of nodes' growth. If not specified, default to 0.01 for all nodes.
-#' @return An N * L array of synthetic time series data.
+#' @return List with TS matrix containing an N*L array of synthetic time series data.
 #' @export
 simulate_lotka <- function(input_matrix, L, init = NULL, gr = NULL, cap = NULL, inter = NULL, dt = 1e-2, stochastic = TRUE, pertb = NULL) {
   # get num of nodes in adj matrix
