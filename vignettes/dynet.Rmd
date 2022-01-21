@@ -166,7 +166,7 @@ The resulting list stores the initial $N\times N$ ground truth network, $N\times
 * **initial_node** Starting node for walk
 
 ## Returns ##
-* An $N\times L$ matrix of synthetic time series data.
+* List with the initial $N\times N$ ground truth network, $N\times L$ time series synthetically generated.
 
 ## Code Example ##
 ```{r, eval = FALSE}
