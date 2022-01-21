@@ -11,7 +11,7 @@
 #' @param L the length of the desired time series.
 #' @param noise if noise is present, with this probability a node's state will be randomly redrawn from (-1,1) \cr
 #' independent of its neighbors' states. If 'automatic', set noise to 1/N.
-#' @return results a list with TS matrix an N*L array of synthetic time series data.
+#' @return List with TS matrix containing an N*L array of synthetic time series data.
 #' @export
 voter <- function(input_matrix, L, noise = NULL) {
   # get adj matrix
